@@ -489,12 +489,12 @@ document.addEventListener("keydown", function(){
     }
     for (var i=0;i<hits.length;i++) {
       var endTime = getHardness(hits[i]);
-      breakingProgress = Math.round(time/endTime*100); 
+      breakingProgress = Math.round(time/endTime*100);
       if (!breakingProgress || breakingProgress > 100) {
-        breakingProgress = "0"
+        breakingProgress = "0";
       } else if (breakingProgress < 75) {
         var mine = new Audio(BLOCKSOUNDS[getObjFromSpr(hits[i]).id]);
-        mine.play()
+        mine.play();
       }
       //Set breaking indicator
       if (endTime <= time) {
@@ -1113,7 +1113,7 @@ function renderGuis() {
   screen.fillText(Math.round(p.x)+chunk*WIDTH+","+Math.round(p.y)+","+Math.round(p.z), center,SIZE*SCALE); //Display player coords
 
   if (breakingProgress != "0") {
-    screen.fillText(breakingProgress+"%", center, SIZE*SCALE*2); //Display breaking progress indicator
+    screen.fillText(breakingProgress+"%", center, player.pos.y*SIZE*SCALE); //Display breaking progress indicator
   }
 
   screen.fillText(player.health+"/"+player.maxHealth, center,SIZE*SCALE*3); //Display player health
@@ -1126,13 +1126,14 @@ function renderGuis() {
       var id = inventory[i][0];
       var count = inventory[i][1];
       var src = BLOCKS[id];
-      var pos = i*SIZE*SCALE*2+center-(max*SIZE*SCALE*2)/2;
+      var pos = i*SIZE*SCALE+center-(max*SIZE*SCALE)/2;
+      var ygui = player.pos.y*SIZE*SCALE;
       screen.drawImage(SPRITES, 
       src.x*SIZE, src.y*SIZE, 
       SIZE, SIZE, 
-      pos, SIZE*SCALE*2.5,
+      pos, HEIGHT*SIZE*SCALE-ygui,
       SIZE*SCALE, SIZE*SCALE); //Render inventory block
-      screen.fillText("x"+count, pos, SIZE*SCALE*4); //Display block count
+      screen.fillText("x"+count, pos, HEIGHT*SIZE*SCALE-ygui+SIZE*SCALE); //Display block count
     }
   } 
 }
