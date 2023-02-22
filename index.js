@@ -342,12 +342,12 @@ var BIOMENOISE = [
   [.1, .2, HEIGHT*.1, HEIGHT*.4], //Void top
 ]
 var BIOMETREES = [
-  [.05, 7], //Tundra Snowmen
-  [.1, 6], //Mountain Trees
-  [.25, 6], //Forest Trees
-  [.3, 9], //Mushroom Mushrooms
-  [.15, 8], //Desert Cacti
-  [.2, 8], //Volcano Cacti
+  [.05, 7, 3], //Tundra Snowmen
+  [.1, 6, 9], //Mountain Trees
+  [.25, 6, 5], //Forest Trees
+  [.3, 9, 16], //Mushroom Mushrooms
+  [.15, 8, 4], //Desert Cacti
+  [.2, 8, 1], //Volcano Cacti
   0, 
   0
 ];
@@ -519,6 +519,10 @@ document.addEventListener("keydown", function(){
           }
         }
         block.remove(); //Delete block
+        var above = checkPosition(new vector(Math.round(block.pos.x+block.pos.x-p.x),Math.round(block.pos.y+block.pos.y-p.y),Math.round(block.pos.z+block.pos.z-p.z)));
+        for (var i=0;i<above.length;i++) {
+          above[i].pos.y += 1;
+        }
         addToInventory(blockObj.id, inventory); //Add to inventory
         keyTicks[keyIndex] = tick; //Reset key hold
       }
@@ -948,7 +952,9 @@ function generateTerrain() { //Generates a chunk of terrain
             id = getOre(x,y,z,OREMAPS,ORENOISE[biomeID],2);
           }
           if (hasTree) {
-            new object(new sprite(new vector(x,HEIGHT-height-1,z), new vector2(0,0)), BIOMETREES[biomeID][1]); //Place a tree
+            for (var i=0;i<BIOMETREES[biomeID][2];i++) {
+              new object(new sprite(new vector(x,HEIGHT-height-1-i,z), new vector2(0,0)), BIOMETREES[biomeID][1]); //Place a tree
+            }
             hasTree = false;
           }
           new object(new sprite(new vector(x,realHeight,z), new vector2(0,0)), id);
@@ -1073,6 +1079,9 @@ function mobAi() { //Mob Ai's
       if (mobPos.distance(p) < 1) {
         player.health -= 10;
       }
+      if (mobPos.y > HEIGHT/2) {
+        mobSpr.remove();
+      }
     }
     if (mob.id == -3) { //Zombie
       chasePlayer();
@@ -1127,13 +1136,12 @@ function renderGuis() {
       var count = inventory[i][1];
       var src = BLOCKS[id];
       var pos = i*SIZE*SCALE+center-(max*SIZE*SCALE)/2;
-      var ygui = player.pos.y*SIZE*SCALE;
       screen.drawImage(SPRITES, 
       src.x*SIZE, src.y*SIZE, 
       SIZE, SIZE, 
-      pos, HEIGHT*SIZE*SCALE-ygui,
+      pos, HEIGHT*SIZE*SCALE-SIZE*SCALE,
       SIZE*SCALE, SIZE*SCALE); //Render inventory block
-      screen.fillText("x"+count, pos, HEIGHT*SIZE*SCALE-ygui+SIZE*SCALE); //Display block count
+      screen.fillText("x"+count, pos, HEIGHT*SIZE*SCALE); //Display block count
     }
   } 
 }
